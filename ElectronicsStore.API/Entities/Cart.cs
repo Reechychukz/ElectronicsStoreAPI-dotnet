@@ -10,17 +10,16 @@ namespace ElectronicsStore.API.Entities
     public class Cart
     {
         [Key]
-        public string CartId { get; set; }
+        public string Id { get; set; }
         [ForeignKey("User")] 
-        public string SecurityStamp { get; set; }
+        public string UserId { get; set; }
         
         public virtual User User { get; set; }
-        public int Quantity { get; set; }
-
-        public ICollection<Product> Products { get; set; }
+        
+        //public ICollection<Product> Products { get; set; }
         public List<CartProduct> CartProducts { get; set; }
         
-        
+        public decimal TotalPrice { get; set; }
         
     }
 }

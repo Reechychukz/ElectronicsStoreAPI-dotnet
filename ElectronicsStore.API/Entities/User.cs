@@ -13,7 +13,7 @@ namespace ElectronicsStore.API.Entities
     public class User : IdentityUser
     {
         [Key]
-        public override string SecurityStamp { get; set; }
+        public override string Id { get; set; }
         public override string Email { get; set; }
         public override string UserName { get; set; }
         public string Password { get; set; }
@@ -31,6 +31,7 @@ namespace ElectronicsStore.API.Entities
         public string Address { get; set; }
 
         public virtual Cart Cart { get; set; }
+        
 
 
 

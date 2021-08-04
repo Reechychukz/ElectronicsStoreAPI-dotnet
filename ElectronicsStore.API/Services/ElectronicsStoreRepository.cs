@@ -2,6 +2,7 @@
 using ElectronicsStore.API.Entities;
 using ElectronicsStore.API.Model;
 using ElectronicsStore.API.ResourceParameters;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,11 @@ namespace ElectronicsStore.API.Services
             return _context.GetUsers().ToList<User>();
         }
 
+        public IEnumerable<Cart> GetCarts()
+        {
+            return _context.Carts.ToList<Cart>();
+        }
+
         public IEnumerable<Product> GetProducts()
         {
             return _context.Products.ToList<Product>();
@@ -38,6 +44,18 @@ namespace ElectronicsStore.API.Services
             return _context.Products
                         .Where(c => c.CategoryId == categoryId)
                         .OrderBy(c => c.ProductName).ToList();
+        }
+
+        public IEnumerable<CartProduct> GetCartProducts(string cartId)
+        {
+            if (cartId == string.Empty)
+            {
+                throw new ArgumentNullException(nameof(cartId));
+            }
+            return _context.CartProducts
+                     .Where(c => c.CartId == cartId)
+                     .Include(c => c.Product)
+                     .OrderBy(c => c.ProductId).ToList();
         }
         public IEnumerable<Product> GetProducts(ProductsResourceParameters productsResourceParameters)
         {
@@ -78,7 +96,7 @@ namespace ElectronicsStore.API.Services
             {
                 throw new ArgumentNullException(nameof(userId));
             }
-            return _context.GetUsers().FirstOrDefault(a => a.SecurityStamp == userId);
+            return _context.GetUsers().FirstOrDefault(a => a.Id == userId);
         }
 
         
@@ -90,7 +108,7 @@ namespace ElectronicsStore.API.Services
                 throw new ArgumentNullException(nameof(categoryIds));
             }
 
-            return _context.Categories.Where(a => categoryIds.Contains(a.CategoryId))
+            return _context.Categories.Where(a => categoryIds.Contains(a.Id))
                 .OrderBy(a => a.CategoryName)
                 .OrderBy(a => a.Products)
                 .ToList();
@@ -103,17 +121,10 @@ namespace ElectronicsStore.API.Services
             {
                 throw new ArgumentNullException(nameof(categoryId));
             }
-            return _context.Categories.FirstOrDefault(a => a.CategoryId == categoryId);
+            return _context.Categories.FirstOrDefault(a => a.Id == categoryId);
         }
 
-        public CartProduct GetCartProduct(string cartProductId)
-        {
-            if (cartProductId == String.Empty)
-            {
-                throw new ArgumentNullException(nameof(cartProductId));
-            }
-            return _context.CartProducts.FirstOrDefault(a => a.CartId == cartProductId);
-        }
+        
 
         
 
@@ -145,7 +156,35 @@ namespace ElectronicsStore.API.Services
             }
 
             return _context.Products
-                .Where(p => p.CategoryId == categoryId && p.ProductId == productId).FirstOrDefault();
+                .Where(p => p.CategoryId == categoryId && p.Id == productId).FirstOrDefault();
+        }
+
+        public Product GetProduct(string productId)
+        {
+            if(productId == string.Empty) 
+            {
+                throw new ArgumentNullException(nameof(productId));
+            }
+
+            return _context.Products
+                .Where(p => p.Id == productId).FirstOrDefault();
+        }
+
+        public Cart GetCart(string userId, string cartId)
+        {
+            if (userId == string.Empty)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+
+            if (cartId == string.Empty)
+            {
+                throw new ArgumentNullException(nameof(cartId));
+            }
+
+            return _context.Carts
+                .Where(p => p.UserId == userId && p.Id == cartId).FirstOrDefault();
         }
         public void AddCategory(Category category)
         {
@@ -155,11 +194,11 @@ namespace ElectronicsStore.API.Services
             }
 
             // the repository fills the id (instead of using identity columns)
-            category.CategoryId = Guid.NewGuid().ToString();
+            category.Id = Guid.NewGuid().ToString();
 
             foreach (var product in category.Products)
             {
-                product.ProductId = Guid.NewGuid().ToString();
+                product.Id = Guid.NewGuid().ToString();
             }
 
             _context.Categories.Add(category);
@@ -195,14 +234,41 @@ namespace ElectronicsStore.API.Services
                 throw new ArgumentNullException(nameof(product));
             }
             // always set the CategoryId to the passed-in categoryId
+            product.Id = Guid.NewGuid().ToString();
             product.CategoryId = categoryId;
             _context.Products.Add(product);
         }
-        public void AddCart(string securityStamp, Cart cart)
+
+        public void AddCartProduct(string cartId, string productId, CartProduct cartProduct)
         {
-            if (securityStamp == string.Empty)
+            if (cartId == string.Empty)
             {
-                throw new ArgumentNullException(nameof(securityStamp));
+                throw new ArgumentNullException(nameof(cartId));
+            }
+
+            if (productId == string.Empty)
+            {
+                throw new ArgumentNullException(nameof(productId));
+            }
+
+            if (cartProduct == null)
+            {
+                throw new ArgumentNullException(nameof(cartProduct));
+            }
+
+            
+            // always set the CartId to the passed-in cartId
+            cartProduct.Id = Guid.NewGuid().ToString();
+            cartProduct.CartId = cartId;
+            cartProduct.ProductId = productId;
+            
+            _context.CartProducts.Add(cartProduct);
+        }
+        public void AddCart(string userId, Cart cart)
+        {
+            if (userId == string.Empty)
+            {
+                throw new ArgumentNullException(nameof(userId));
             }
 
             if (cart == null)
@@ -210,8 +276,9 @@ namespace ElectronicsStore.API.Services
                 throw new ArgumentNullException(nameof(cart));
             }
 
-            cart.CartId = Guid.NewGuid().ToString();
-            // always set the CategoryId to the passed-in categoryId
+            cart.Id = userId;
+            cart.UserId = userId; 
+            // always set the userId to the passed-in userId
             
             _context.Carts.Add(cart);
         }
@@ -243,7 +310,7 @@ namespace ElectronicsStore.API.Services
             {
                 throw new ArgumentNullException(nameof(userId));
             }
-            return _context.GetUsers().Any(a => a.SecurityStamp == userId);
+            return _context.GetUsers().Any(a => a.Id == userId);
         }
         public bool CategoryExists(string categoryId)
         {
@@ -251,7 +318,7 @@ namespace ElectronicsStore.API.Services
             {
                 throw new ArgumentNullException(nameof(categoryId));
             }
-            return _context.GetCategories().Any(a => a.CategoryId == categoryId);
+            return _context.GetCategories().Any(a => a.Id == categoryId);
         }
 
         public bool CategoryNameExists(string categoryName)
@@ -271,13 +338,23 @@ namespace ElectronicsStore.API.Services
                 throw new ArgumentNullException(nameof(productId));
             }
             
-            return _context.GetProducts().Any(a => a.ProductId == productId);
+            return _context.GetProducts().Any(a => a.Id == productId);
+        }
+
+        public bool CartExists(string cartId)
+        {
+            if (cartId == string.Empty)
+            {
+                throw new ArgumentNullException(nameof(cartId));
+            }
+
+            return _context.GetCarts().Any(a => a.Id == cartId);
         }
 
 
         public bool Save()
         {
-            return (_context.SaveChanges() >= 0);
+            return _context.SaveChanges() >= 0;
         }
 
         public void Dispose()

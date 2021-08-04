@@ -7,7 +7,7 @@ namespace ElectronicsStore.API.Model
 {
     public class CategoryDto
     {
-        public String CategoryId { get; set; }
+        public String Id { get; set; }
         public String CategoryName { get; set; }
     }
 }

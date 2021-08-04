@@ -83,6 +83,7 @@ namespace ElectronicsStore.API.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    //new Claim("UserId", user.Id.ToString()),
                 };
 
                 foreach (var userRole in userRoles)
@@ -118,9 +119,8 @@ namespace ElectronicsStore.API.Controllers
 
              User user = new User()
              {
-
                  Email = userForRegistrationDto.Email,
-                 SecurityStamp = Guid.NewGuid().ToString(),
+                 Id = Guid.NewGuid().ToString(),
                  FirstName = userForRegistrationDto.FirstName,
                  LastName = userForRegistrationDto.LastName,
                  UserName = userForRegistrationDto.UserName,
@@ -152,7 +152,7 @@ namespace ElectronicsStore.API.Controllers
             {
                 
                 Email = userForRegistrationDto.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 FirstName = userForRegistrationDto.FirstName,
                 LastName = userForRegistrationDto.LastName,
                 UserName = userForRegistrationDto.UserName,                
@@ -199,6 +199,8 @@ namespace ElectronicsStore.API.Controllers
             _electronicsStoreRepository.Save();
             return NoContent();
         }
+
+
 
 
     }

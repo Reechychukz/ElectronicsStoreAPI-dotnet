@@ -9,7 +9,7 @@ namespace ElectronicsStore.API.Entities
     public class Category
     {
         [Key]
-        public string CategoryId { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [MaxLength(100)]

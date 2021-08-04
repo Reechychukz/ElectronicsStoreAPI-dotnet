@@ -9,7 +9,7 @@ namespace ElectronicsStore.API.Model
     {
         public string ProductName { get; set; }
         public string ProductCategory { get; set; }
-        public int ProductPrice { get; set; }
+        public decimal ProductPrice { get; set; }
         public string ProductDescription { get; set; }
         public int NumberOfProducts { get; set; }
     }

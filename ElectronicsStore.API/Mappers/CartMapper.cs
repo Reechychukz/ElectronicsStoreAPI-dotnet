@@ -10,8 +10,11 @@ namespace ElectronicsStore.API.Mappers
     {
         public CartMapper()
         {
+            AllowNullCollections = true;
+            CreateMap<Entities.Cart, Model.CartForCreationDto>().ReverseMap();
+            CreateMap<Model.CartForCreationDto, Entities.Product>();
+
             CreateMap<Entities.Cart, Model.CartDto>();
-            CreateMap<Model.CartForCreationDto, Entities.Cart>();
         }
     }
 }

@@ -58,7 +58,7 @@ namespace ElectronicsStore.API.Controllers
 
             var categoryToReturn = _mapper.Map<CategoryDto>(categoryEntity);
             return CreatedAtRoute("GetCategory",
-                new { categoryId = categoryToReturn.CategoryId},
+                new { categoryId = categoryToReturn.Id},
                 categoryToReturn);
             
         }

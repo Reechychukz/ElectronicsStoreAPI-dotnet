@@ -57,7 +57,7 @@ namespace ElectronicsStore.API.Controllers
             }
             _electronicsStoreRepository.Save();
             var categoryCollectionToReturn = _mapper.Map<IEnumerable<CategoryDto>>(categoryEntities);
-            var idsAsString = string.Join(",", categoryCollectionToReturn.Select(a => a.CategoryId));
+            var idsAsString = string.Join(",", categoryCollectionToReturn.Select(a => a.Id));
             return CreatedAtRoute("GetCategoryCollection",
                 new { ids = idsAsString },
                 categoryCollectionToReturn);

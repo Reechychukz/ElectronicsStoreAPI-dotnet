@@ -11,7 +11,7 @@ namespace ElectronicsStore.API.Entities
     public class Product
     {
         [Key]
-        public string ProductId { get; set; }
+        public string Id { get; set; }
         
 
         [Required]
@@ -21,13 +21,15 @@ namespace ElectronicsStore.API.Entities
         public string ProductCategory { get; set; }
 
         [Required]
-        public double ProductPrice { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
+        public decimal ProductPrice { get; set; }
         public string ProductDescription { get; set; }
         [Required]
         public int NumberOfProductsInStock { get; set; }
-        public ICollection<Cart> Carts { get; set; }
-        public List<CartProduct> CartProducts { get; set; }
         
+        public List<CartProduct> CartProducts { get; set; }
+        public int Quantity { get; set; }
+
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
         public string CategoryId { get; set; }

@@ -14,10 +14,11 @@ namespace ElectronicsStore.API.Mappers
             .ForMember(
                     dest => dest.ProductPrice,
                     opt => opt.MapFrom(src => $"${src.ProductPrice}"));
-
+            CreateMap<Model.ProductDto, Entities.Product>();
+            CreateMap<Entities.Product, Model.AddProductToCartDto>();
             CreateMap<Model.ProductForCreationDto, Entities.Product>();
             CreateMap<Model.ProductForUpdateDto, Entities.Product>();
-            CreateMap<Entities.Product, Model.ProductForUpdateDto>();
+            
 
 
         }

@@ -21,20 +21,17 @@ namespace ElectronicsStore.API.Migrations
 
             modelBuilder.Entity("ElectronicsStore.API.Entities.Cart", b =>
                 {
-                    b.Property<string>("CartId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SecurityStamp")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("CartId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("SecurityStamp")
+                    b.HasIndex("UserId")
                         .IsUnique()
-                        .HasFilter("[SecurityStamp] IS NOT NULL");
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Carts");
                 });
@@ -64,7 +61,7 @@ namespace ElectronicsStore.API.Migrations
 
             modelBuilder.Entity("ElectronicsStore.API.Entities.Category", b =>
                 {
-                    b.Property<string>("CategoryId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CategoryName")
@@ -72,7 +69,7 @@ namespace ElectronicsStore.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
@@ -90,7 +87,7 @@ namespace ElectronicsStore.API.Migrations
 
             modelBuilder.Entity("ElectronicsStore.API.Entities.Product", b =>
                 {
-                    b.Property<string>("ProductId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CategoryId")
@@ -111,10 +108,10 @@ namespace ElectronicsStore.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<double>("ProductPrice")
-                        .HasColumnType("float");
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("decimal(18,4)");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
@@ -339,7 +336,7 @@ namespace ElectronicsStore.API.Migrations
                 {
                     b.HasOne("ElectronicsStore.API.Entities.User", "User")
                         .WithOne("Cart")
-                        .HasForeignKey("ElectronicsStore.API.Entities.Cart", "SecurityStamp");
+                        .HasForeignKey("ElectronicsStore.API.Entities.Cart", "UserId");
 
                     b.Navigation("User");
                 });
