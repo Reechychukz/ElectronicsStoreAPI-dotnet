@@ -18,4 +18,5 @@ Microsoft.EntityFrameworkCore.Tools
 Microsoft.VisualStudio.Web.CodeGeneation.Design
 Swashbuckle.AspNetCore
 
-### The checkout feature has not been added for now, as i am still working it. Feel free to make contributions to this project
+### The payment gateway integration using Paystack in progress
+
